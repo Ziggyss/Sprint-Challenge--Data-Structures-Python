@@ -43,5 +43,19 @@ class LinkedList:
     return False
 
   def reverse_list(self):
-    # TO BE COMPLETED
-    pass
+    # Initialise pointers
+     previous_node = None
+     current_node = self.head
+     next_node = None
+     while current_node != None:
+       # store the next node 
+       next_node = current_node.next_node
+       # change the next of the current node
+       current_node.next_node = previous_node
+       # Move current and previous one step forward
+       previous_node = current_node
+       current_node = next_node
+       self.head = previous_node
+
+
+# I found this task really hard and had to use trial and error to get there. It was confusing me how to swap and then move along the list. I find it hard to get my head around the assignments that come right after one another sometimes and would love to go over this afterwards.       

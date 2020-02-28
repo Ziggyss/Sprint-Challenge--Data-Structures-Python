@@ -1,10 +1,5 @@
-# from doubly_linked_list import DoublyLinkedList
-
-# I had some real issues with things not being recognised from the DoublyLinkedList file so I had to copy and paste it into the top of this file. My solution code is underneath.
-
 """Each ListNode holds a reference to its previous node
 as well as its next node in the List."""
-
 
 class ListNode:
     def __init__(self, value, prev=None, next=None):
@@ -102,7 +97,11 @@ class DoublyLinkedList:
         if node is self.head:
             return
         value = node.value
-        self.delete(node)
+        if node is self.tail:
+            self.remove_from_tail()
+        else:
+            node.delete()
+            self.length -= 1
         self.add_to_head(value)
 
     """Removes the input node from its current spot in the 
@@ -111,89 +110,40 @@ class DoublyLinkedList:
         if node is self.tail:
             return
         value = node.value
-        self.delete(node)
+        if node is self.head:
+            self.remove_from_head()
+        else:
+            node.delete()
+            self.length -= 1
+        
         self.add_to_tail(value)
 
     """Removes a node from the list and handles cases where
     the node was the head or the tail"""
     def delete(self, node):
         self.length -= 1
-        if self.head is self.tail:
+        if not self.head and not self.tail:
+            return
+        if self.head == self.tail:
             self.head = None
             self.tail = None
-        elif self.head is node:
+        elif self.head == node:
             self.head = node.next
             node.delete()
-        elif self.tail is node:
+        elif self.tail == node:
             self.tail = node.prev
             node.delete()
         else:
             node.delete()
-
+        
     """Returns the highest value currently in the list"""
     def get_max(self):
+        if not self.head:
+            return None
         max_value = self.head.value
-        current = self.head
-        while current is not None:
-            if current.value > max_value:
-                max_value = current.value
-            current = current.next
-
+        current_node = self.head
+        while current_node:
+            if current_node.value > max_value:
+                max_value = current_node.value
+            current_node = current_node.next
         return max_value
-
-
-
-class RingBuffer:
-    def __init__(self, capacity):
-        self.capacity = capacity
-        self.current = None
-        self.storage = DoublyLinkedList()
-
-    def append(self, item):
-        # If there is room in the buffer - add the item to the tail
-        if self.storage.__len__() < self.capacity:
-            self.storage.add_to_tail(item)
-            self.current = self.storage.tail        
-           
-        #Otherwise, if the current node has a next, insert the item after and then delete the old value
-        else:
-            if self.current.next:
-                self.current.insert_after(item)
-                self.current = self.current.next
-                self.current.next.delete()
-            # If the item has no next, then we are at the end of the list and we can go back to the head    
-            else:
-                self.storage.remove_from_head()
-                self.storage.add_to_head(item)
-                self.current = self.storage.head           
-
-
-
-    def get(self):
-        # Note:  This is the only [] allowed
-        list_buffer_contents = []
-
-        # TODO: Your code here  
-        item = self.storage.head
-
-        while item:
-            list_buffer_contents = list_buffer_contents+[item.value]
-            item = item.next
-
-        # I had terrible troubles with this part - I tried to use append and got an error that the object has no attribute append. I also tried to loop over the Doubly linked list and had issues as it said it wasn't iterable. Finally this solution worked.   
-
-
-        return list_buffer_contents
-
-# ----------------Stretch Goal-------------------
-
-
-class ArrayRingBuffer:
-    def __init__(self, capacity):
-        pass
-
-    def append(self, item):
-        pass
-
-    def get(self):
-        pass
